@@ -1,0 +1,47 @@
+use livraria
+go
+drop database livraria 
+go 
+create database livraria 
+go
+use livraria 
+go
+create table Livro(
+cod         int             not null identity(100001,100),
+nome       varchar(200)     not null, 
+lingua     varchar(10)      not null default('PT-BR'),
+Ano         int             not null check (ano<=1990),
+primary key (cod)
+)
+go
+ 
+create table Autor (
+id         int  not null identity (2351, 1),
+nome       varchar(100)  not null unique ,
+data_nasc  date  not null, 
+pais_nasc  varchar    not null check(upper(len(pais_nasc))='BRASIL' or pais_nasc = 'ESTADOS UNIDOS' OR pais_nasc='INGLATERRA' OR pais_nasc='ALEMANHA'),
+biografia  varchar    not null,
+primary key (id)
+)
+go 
+create table Editora(
+id         int not null identity (491, 16),
+nome       varchar (70)  not null unique,
+Telefone   varchar (11) not null check(Telefone=10),
+Logradouro_Endereco varchar(200)  not null,
+Numero_Endereco  int not null check(Numero_Endereco>0),
+CEP_Endereco char(8) not null check(CEP_Endereco = 8),
+ 
+primary key (id) 
+)
+go
+create table Edicao(
+isbn  char(13) not null check(len(isbn)=13),
+preco decimal(4,2) not null check(preco>0),
+ano int not null check(ano>=1993),
+Numero_Paginas int not null check(Numero_Paginas>=15),
+Qtd_Estoque int not null,
+primary key (isbn)
+)
+go
+ 
