@@ -1,1 +1,62 @@
-u
+use master 
+go
+drop database maternidade 
+
+create database maternidade
+go
+use maternidade 
+
+create table mae(
+Id_Mae		int				not null          identity(1001,1),
+nome		varchar(60)		not null,
+logradouro	varchar(100)	not null,
+numero		int				not null         check(numero >= 0),
+cep			char(8)			not null,       check(len(cep) = 8),
+complemento	varchar(200)	not null,
+telefone	char(10)		not null      check(len(telefone) = 10),
+data_nasc	date			not null
+primary key (Id_Mae)
+)
+go
+
+insert into mae values
+('Mãe', 'rua taldo', 56, '25452654', 'poste','1100000000','1910-03-05')
+
+
+
+create table medico(
+crm_numero int             not null, 
+crm_uf char(2)             not null, 
+nome varchar(60)           not null,
+telefone char(11)           not null  unique check(len(telefone) = 11),
+especialidade varchar(30)   not null,
+primary key (crm_numero, crm_uf)
+)                              
+go
+
+insert into medico values
+(21121212, 'SP', 'dr.taldo', '11111111111', 'medico') 
+
+
+create table bebe(
+Id_bebe int          not null identity(1,1),
+nome varchar(60)     not null,
+nasc date            not null default (getdate()),
+alt decimal(7,2)     not null check(alt>=0),
+peso decimal (7,2)   not null check(peso>=0),
+Id_Mae int           not null primary key (Id_Mae)
+foreign key (Id_Mae) references mae(Id_Mae)
+)
+go 
+
+create table medico_bebe(
+Id_bebe int          not null,
+crm_numero int       not null,
+crm_uf char(2)       not null 
+primary key (Id_bebe, crm_numero, crm_uf)
+foreign key(Id_bebe) references bebe(Id_bebe),
+foreign key(crm_numero, crm_uf) references medico(crm_numero, crm_uf)
+)
+select * from mae
+
+
