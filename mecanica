@@ -1,1 +1,92 @@
-use mecanica
+use master 
+go 
+drop database Mecanica 
+
+create database mecanica
+go
+use Mecanica
+
+create table Cliente( 
+Id         int     not null   identity (3401, 15), 
+Nome       varchar(100) not null,
+Numero    int not null check (Numero>0),
+Logradouro varchar(200) not null,
+Cep char(8)   not null check(Cep = 8),
+Complemento varchar(255) not null
+primary key (Id)
+)
+go
+
+Create table Telefone(
+Telefone char(11) not null check(len (Telefone) = 11),
+Id int not null, 
+Primary key (Telefone, Id),
+FOREIGN KEY (Id) REFERENCES Cliente (Id)
+)
+ go
+
+ Create table Veiculo(
+ Placa char(7) not null check(len(Placa)= 7),
+ Marca  varchar(30) not null,
+ Modelo varchar(30) not null,
+ Cor    varchar(15) not null,
+ AnoFabricacao int  not null check(AnoFabricacao>1997),
+ AnoModelo int not null Check(AnoModelo>1997),
+ DAtaAqui  Date not null,
+ Id int  not null,
+ primary key (Placa),
+ Foreign key(Id) references Cliente(Id),
+ CONSTRAINT verifi_Ano_MODFAB check(AnoModelo>=AnoFabricacao or AnoMOdelo>=AnoFabricacao +1),
+ )
+ go
+
+ create table Peca(
+ Id int not null identity(3411,7),
+ Nome varchar(30) not null unique,
+ Preco  decimal(4,2) not null check(Preco > 0),
+ Estoque int not null check(Estoque>=10),
+ primary key (Id)
+ 
+ )
+ go
+
+ create table Categoria(
+ Id int not null identity(1,1),
+ Categoria varchar(10) not null,
+ ValorHora decimal(4,2) not null check(ValorHora > 0)
+ primary key (Id),
+ constraint verif_catValor check ((upper(Categoria) = 'Estagiario' and ValorHora>15.00) or
+(upper(Categoria) = 'Nivel 1' and Valorhora > 25.00) or
+(upper(Categoria) = 'Nivel 2' and ValorHora>35.00) or
+(upper(Categoria) = 'Nivel 3' and ValorHora > 50.00))
+ )
+ go
+
+ create table Funcionario(
+ Id   int not null identity(101, 1), 
+ Nome varchar(100) not null,
+ Logradouro varchar(200) not null,
+ Numero int not null check(Numero>0),
+ Telefone char(11) not null check(Len(Telefone) = 11),
+ CatHabilitacao varchar(2) not null check ((UPPER(CatHabilitacao) = 'A') or (UPPER(CatHabilitacao) = 'B') or 
+ (UPPER(CatHabilitacao) = 'C') or (UPPER(CatHabilitacao) = 'D') or (UPPER(CatHabilitacao) = 'E')),
+ primary key(Id),
+ foreign key(Id) references Categoria(Id)
+ )
+ go 
+
+ create table Reparo(
+ Data_repa date not null default(getdate()),
+ Placa char(7) not null,
+ Funcionario int not null,
+ Peca  int not null,
+ CustoTotal decimal(4,2) not null check(CustoTotal > 0),
+ Tempo  int not null,
+ Primary key (Data_repa,Placa,Funcionario, Peca),
+ Foreign key(Placa) references Veiculo(Placa),
+ foreign key(Funcionario) references Funcionario(Id),
+ foreign key(Peca) references Peca(Id)
+ )
+ go
+
+
